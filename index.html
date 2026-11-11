@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Freya D Raja · Professional Bug Whisperer</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e2ead9;--bg2:#cfdcc3;--ink:#2a3627;--sage:#8fa886;--deep:#5b7954;--card:#f2f5ea;--pop:#d9776b;--sun:#e8c872;--line:#2a3627;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#192218;--bg2:#223022;--ink:#e3ecd9;--sage:#7d9a74;--deep:#a9c79f;--card:#28362a;--line:#a9c79f}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#192218;--bg2:#223022;--ink:#e3ecd9;--sage:#7d9a74;--deep:#a9c79f;--card:#28362a;--line:#a9c79f}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Space Grotesk",system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+canvas.px{image-rendering:pixelated;image-rendering:crisp-edges}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+main,header,footer{position:relative;z-index:1}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:"Press Start 2P",monospace;font-weight:400;line-height:1.35;margin:0}
+h2{font-size:clamp(18px,3.4vw,28px);margin-bottom:28px;display:inline-block;background:var(--sun);color:#2a3627;padding:10px 14px;box-shadow:6px 6px 0 var(--line);transform:rotate(-1deg)}
+section{padding:70px 0}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:14px;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--bg);border-bottom:3px solid var(--line);font-family:"Press Start 2P",monospace;font-size:10px}
+.nav a{color:var(--ink);text-decoration:none;margin-left:14px}.nav a:hover{color:var(--pop)}
+.nav .l{display:flex;flex-wrap:wrap}
+button{font:inherit;cursor:pointer}
+.btn{font-family:"Press Start 2P",monospace;font-size:11px;padding:14px 18px;background:var(--pop);color:#2a3627;border:3px solid var(--line);box-shadow:5px 5px 0 var(--line);text-decoration:none;display:inline-block;transition:transform .1s,box-shadow .1s}
+.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--line)}
+.btn:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--line)}
+.btn.alt{background:var(--card);color:var(--ink)}
+.tog{background:var(--card);color:var(--ink);border:3px solid var(--line);padding:4px 8px;font-size:12px}
+/* hero */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center;min-height:86vh;padding:40px 0}
+.hero h1{font-size:clamp(26px,5.6vw,54px);text-shadow:4px 4px 0 var(--sage)}
+.sub{font-size:clamp(15px,2vw,19px);margin:20px 0;max-width:46ch}
+.term{background:#1f2a1e;color:#b9e3a8;font-family:ui-monospace,Menlo,monospace;font-size:13px;padding:14px;border:3px solid var(--line);box-shadow:6px 6px 0 var(--line);margin:22px 0;min-height:98px;max-width:520px}
+.term b{color:#e8c872}.term i{display:inline-block;width:8px;height:14px;background:#b9e3a8;vertical-align:-2px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.stage{perspective:900px;height:380px;display:grid;place-items:center;position:relative}
+.cube{width:130px;height:130px;position:relative;transform-style:preserve-3d}
+.face{position:absolute;inset:0;display:grid;place-items:center;background:var(--card);border:4px solid var(--line);backface-visibility:visible}
+.face:nth-child(1){transform:translateZ(65px)}.face:nth-child(2){transform:rotateY(90deg) translateZ(65px)}.face:nth-child(3){transform:rotateY(180deg) translateZ(65px)}
+.face:nth-child(4){transform:rotateY(-90deg) translateZ(65px)}.face:nth-child(5){transform:rotateX(90deg) translateZ(65px)}.face:nth-child(6){transform:rotateX(-90deg) translateZ(65px)}
+.shadow{position:absolute;bottom:34px;width:150px;height:22px;background:var(--line);opacity:.25;border-radius:50%;filter:blur(3px)}
+.orb{position:absolute;image-rendering:pixelated;will-change:transform}
+.hint{position:absolute;bottom:0;font-size:12px;opacity:.7}
+.bubble{position:absolute;top:6px;right:0;max-width:230px;background:var(--card);border:3px solid var(--line);padding:10px;font-size:13px;box-shadow:4px 4px 0 var(--line);opacity:0;transform:scale(.8);transition:.2s;pointer-events:none}
+.bubble.on{opacity:1;transform:none}
+/* ticker */
+.tick{overflow:hidden;border-block:3px solid var(--line);background:var(--deep);color:#f2f5ea;font-family:"Press Start 2P",monospace;font-size:11px;padding:12px 0;white-space:nowrap;position:relative;z-index:1}
+.tick div{display:inline-block;animation:mq 60s linear infinite;padding-left:100%}
+@keyframes mq{to{transform:translateX(-100%)}}
+/* cards */
+.grid{display:grid;gap:26px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));perspective:1100px}
+.card{background:var(--card);border:3px solid var(--line);box-shadow:8px 8px 0 var(--line);padding:22px;transform-style:preserve-3d;transition:transform .15s ease-out;will-change:transform}
+.card h3{font-size:13px;margin-bottom:10px}
+.card p,.card li{font-size:15px}
+.card ul{padding-left:18px;margin:10px 0 0}
+.card .tag{font-family:"Press Start 2P",monospace;font-size:9px;background:var(--sage);color:#1d2a1b;padding:5px 7px;display:inline-block;margin-bottom:12px}
+.card .when{font-size:13px;opacity:.75;margin-bottom:8px}
+.card > *{transform:translateZ(18px)}
+.quest{display:grid;gap:26px}
+.quest .card{display:grid;grid-template-columns:70px 1fr;gap:18px}
+.stats{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:30px}
+.stat{background:var(--bg2);border:3px dashed var(--line);padding:16px;text-align:center}
+.stat b{font-family:"Press Start 2P",monospace;font-size:20px;display:block;margin-bottom:8px;color:var(--pop)}
+.inv{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.chip{font-size:13px;padding:6px 10px;background:var(--bg);border:2px solid var(--line);transition:transform .15s,background .15s;cursor:default}
+.chip:hover{transform:rotate(-4deg) scale(1.15);background:var(--sun);color:#2a3627}
+.about{display:grid;grid-template-columns:200px 1fr;gap:30px;align-items:center}
+.about p{font-size:17px;max-width:62ch}
+.trophy{display:flex;gap:14px;align-items:center}
+.bug{position:fixed;z-index:4;cursor:crosshair;image-rendering:pixelated;transition:opacity .2s}
+.count{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:6;background:var(--card);border:3px solid var(--line);font-family:"Press Start 2P",monospace;font-size:9px;padding:8px 10px;box-shadow:4px 4px 0 var(--line)}
+footer{padding:50px 20px 80px;text-align:center;border-top:3px solid var(--line);background:var(--bg2)}
+footer p{max-width:60ch;margin:14px auto}
+@media (max-width:780px){.hero,.about{grid-template-columns:1fr}.stage{height:320px}.nav a{margin-left:8px;font-size:8px}.quest .card{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:3px solid var(--pop);outline-offset:3px}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="nav"><div class="l"><a href="#about">About</a><a href="#quests">Quests</a><a href="#loot">Loot</a><a href="#skills">Inventory</a><a href="#hire">Hire me</a></div><button class="tog" id="tog" aria-label="Toggle theme">◐</button></div>
+
+<header class="wrap hero">
+  <div>
+    <h1>Freya D Raja</h1>
+    <p class="sub">Cybersecurity student who finds holes for fun and patches them for money. Currently 9.27/10 on GPA and 0/10 on trusting your password.</p>
+    <div class="term" aria-live="polite"><b>freya@sage:~$</b> <span id="ty"></span><i></i></div>
+    <a class="btn" href="#quests">Read the quest log</a> <a class="btn alt" href="#hire">Hire me (legally)</a>
+  </div>
+  <div class="stage" id="stage">
+    <div class="shadow"></div>
+    <div class="cube" id="cube"></div>
+    <canvas class="px orb" data-art="plant" data-s="7" style="left:2%;top:14%"></canvas>
+    <canvas class="px orb" data-art="bug" data-s="6" id="orbBug" style="right:6%;bottom:18%"></canvas>
+    <canvas class="px orb" data-art="cat" data-s="6" id="cat" style="left:8%;bottom:12%;cursor:pointer" title="pet the cat"></canvas>
+    <div class="bubble" id="bub"></div>
+    <div class="hint">drag or wave your cursor at the cube · poke the cat</div>
+  </div>
+</header>
+
+<div class="tick"><div id="tk"></div></div>
+
+<main>
+<section id="about"><div class="wrap">
+  <h2>Player Profile</h2>
+  <div class="about">
+    <canvas class="px" data-art="shield" data-s="16" style="max-width:100%"></canvas>
+    <div>
+      <p>I’m a B.Tech CSE (Hons.) student at RV University who specialises in cybersecurity: security operations, vulnerability assessment, IAM, incident response, IT controls, anomaly detection and Linux infrastructure. I do the thing where I look at a network and ask, “but what if it was on fire?”</p>
+      <p>I also publish research on worms. The computer kind. I promise I’m fun at parties.</p>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b data-n="9.27">0</b>GPA out of 10, so, yes, I read the docs</div>
+    <div class="stat"><b data-n="72" data-suf="k">0</b>nodes of internet I infected (in a simulation, relax)</div>
+    <div class="stat"><b data-n="18" data-pre="~" data-suf="%">0</b>lower prediction error vs. homogeneous models</div>
+    <div class="stat"><b data-n="50" data-pre="top ">0</b>students picked across Karnataka for IISc’s CySecK</div>
+  </div>
+</div></section>
+
+<section id="quests"><div class="wrap">
+  <h2>Quest Log</h2>
+  <div class="quest" id="qst"></div>
+</div></section>
+
+<section id="loot"><div class="wrap">
+  <h2>Side Quests &amp; Loot</h2>
+  <div class="grid" id="proj"></div>
+</div></section>
+
+<section id="skills"><div class="wrap">
+  <h2>Inventory</h2>
+  <div class="grid" id="inv"></div>
+</div></section>
+
+<section id="ach"><div class="wrap">
+  <h2>Trophy Shelf</h2>
+  <div class="grid" id="tro"></div>
+</div></section>
+</main>
+
+<footer id="hire">
+  <canvas class="px" data-art="lock" data-s="8"></canvas>
+  <h2 style="margin-top:20px">Hire Me</h2>
+  <p>I will find your vulnerabilities before someone with worse manners does. Slide into my inbox. It has MFA, so be polite.</p>
+  <a class="btn" href="mailto:freyaraja135@gmail.com">freyaraja135@gmail.com</a>
+  <p style="margin-top:26px"><a class="btn alt" href="https://linkedin.com/in/freyaraja" target="_blank" rel="noopener">LinkedIn</a> <a class="btn alt" href="https://github.com/Freya135" target="_blank" rel="noopener">GitHub</a></p>
+  <p style="font-size:13px;opacity:.7">Bengaluru · Built with zero frameworks and one concerning amount of sage · Psst: try the Konami code.</p>
+</footer>
+<div class="count">bugs squashed: <span id="bc">0</span></div>
+
+<script>
+const P={k:"#2a3627",g:"#8fa886",l:"#c5d3b8",w:"#f4f1e6",r:"#d9776b",y:"#e8c872",n:"#9b7653",p:"#c58fa0"};
+const ART={
+shield:["kkkkkkkkkk","kllllllllk","klgggggglk","klggkkgglk","klgkkkkglk","klggkkgglk","klgggggglk",".klgggglk.","..klgglk..","...kllk...","....kk...."],
+bug:["..k....k..","...k..k...","..kggggk..",".kgwggwgk.","kkggggggkk",".kgrrrrgk.","k.kggggk.k","..kggggk..",".k......k."],
+cat:["kk......kk","kgk....kgk","kggkkkkggk","kggggggggk","kgkggggkgk","kggggrgggk","kgggkkgggk",".kggggggk.","..kkkkkk.."],
+skull:[".kkkkkkkk.","kwwwwwwwwk","kwwwwwwwwk","kwkkwwkkwk","kwkkwwkkwk","kwwwkkwwwk",".kwwwwwwk.",".kwkwkwwk.","..kkkkkk.."],
+lock:["...kkkk...","..k....k..","..k....k..","kkkkkkkkkk","kyyyyyyyyk","kyyykkyyyk","kyyykkyyyk","kyyyyyyyyk","kkkkkkkkkk"],
+plant:["....gg....","..ggllgg..",".gglggllg.","..ggglgg..","...gllg...","....nn....","..nnnnnn..",".nnnnnnnn.","..nnnnnn.."]};
+function draw(c){const a=ART[c.dataset.art],s=+c.dataset.s||6,ctx=c.getContext("2d");c.width=a[0].length*s;c.height=a.length*s;
+a.forEach((row,y)=>[...row].forEach((ch,x)=>{if(P[ch]){ctx.fillStyle=P[ch];ctx.fillRect(x*s,y*s,s,s)}}))}
+const drawAll=r=>r.querySelectorAll("canvas[data-art]").forEach(draw);drawAll(document);
+
+// cube
+const cube=document.getElementById("cube");
+["shield","bug","cat","skull","lock","plant"].forEach(n=>{const f=document.createElement("div");f.className="face";f.innerHTML='<canvas class="px" data-art="'+n+'" data-s="9"></canvas>';cube.appendChild(f)});drawAll(cube);
+let rx=-20,ry=30,vx=0,vy=.5,drag=false,lx=0,ly=0,mx=0,my=0;
+const stage=document.getElementById("stage");
+stage.addEventListener("pointerdown",e=>{drag=true;lx=e.clientX;ly=e.clientY});
+addEventListener("pointerup",()=>drag=false);
+addEventListener("pointermove",e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;
+if(drag){vy=(e.clientX-lx)*.4;vx=-(e.clientY-ly)*.4;lx=e.clientX;ly=e.clientY}});
+const orbs=[...document.querySelectorAll(".orb")];
+let t=0;(function loop(){t+=.016;
+if(!drag){vy+=(.5-vy)*.02;vx*=.96}
+ry+=vy;rx+=vx;rx+=((-20+my*-30)-rx)*.004*(drag?0:1);
+cube.style.transform="translateY("+Math.sin(t*1.6)*10+"px) rotateX("+rx+"deg) rotateY("+(ry+mx*40)+"deg)";
+orbs.forEach((o,i)=>{o.style.transform="translate("+(mx*(30+i*18))+"px,"+(Math.sin(t*1.3+i*2)*9+my*24)+"px)"});
+requestAnimationFrame(loop)})();
+
+// terminal typing + jokes
+const jokes=["There’s no place like 127.0.0.1.","I’d tell you a UDP joke, but you might not get it.","Password must contain a capital, a number, and a will to live.","Social engineering: because humans are the best zero-day.","It’s not a bug, it’s an unauthorised feature.","Why did the hacker break up with the router? No connection, too many ports open.","Pentester’s love language: “I found your weak spot.”","The cloud is just someone else’s computer with worse vibes.","Roses are red, violets are blue, 'DROP TABLE users;' -- hello, how are you?","I have a great phishing joke but you’d probably click it.","Zero trust: my entire personality and my relationship status.","My threat model is mostly my own typos.","Two-factor auth: because one regret wasn’t enough.","Hackers don’t break in. They log in. Please stop reusing 'admin123'.","Out of office: currently exploiting a coffee dependency."];
+const cmds=["whoami → professional chaos gremlin (certified)","nmap -sV my_life → 3 open ports: coffee, curiosity, regret","sudo make me_a_sandwich → permission granted","cat resume.pdf → please hire this person","./detect_anomaly.py → found one: you, still on Internet Explorer"];
+const ty=document.getElementById("ty");let ci=0,li=0,del=false;
+(function type(){const s=cmds[ci];if(!del){ty.textContent=s.slice(0,++li);if(li===s.length){del=true;return setTimeout(type,2200)}}else{ty.textContent=s.slice(0,--li);if(li===0){del=false;ci=(ci+1)%cmds.length}}
+setTimeout(type,del?18:42)})();
+document.getElementById("tk").textContent=jokes.join("   ★   ");
+
+// content
+const Q=[["skull","Strategic Assurance &amp; SOC Services Intern","Grant Thornton INDUS","Sep – Oct 2026",["Supports IT security and control assessments: analysing infrastructure, spotting risks, documenting what’s on fire.","Helps with compliance workflows, stakeholder coordination and reporting of control gaps. Yes, I enjoy paperwork. Fight me."],"Boss fight: audits"],
+["cat","Industry Project Trainee","Nokia Bangalore","May – Aug 2026",["Built AI-based anomaly detection and RCA for telecom infrastructure using Linux logs, SNMP and DNS data.","Designed sequence-aware models and automation pipelines for anomaly detection, event correlation and diagnosis. Logs told me everything. Logs never lie. Logs are also very long."],"Boss fight: 3 AM pages"],
+["lock","Cybersecurity Intern","Digital Nexus AI","Jul – Oct 2025",["Worked on network security, threat detection, vulnerability assessment and incident response workflows.","Assisted with secure network architecture, AWS IAM least-privilege policies and Linux security tools for cloud. Least privilege: like parenting, but for permissions."],"Tutorial level"]];
+document.getElementById("qst").innerHTML=Q.map(q=>'<div class="card tilt"><canvas class="px" data-art="'+q[0]+'" data-s="7"></canvas><div><span class="tag">'+q[5]+'</span><h3>'+q[1]+'</h3><div class="when">'+q[2]+' · '+q[3]+'</div><ul>'+q[4].map(x=>"<li>"+x+"</li>").join("")+'</ul></div></div>').join("");
+const R=[["Singular Measure Decomposition for Network Traffic Anomaly Detection","2025","A resolution-dependent anomaly detection framework: continuous background traffic plus sparse singular anomaly events. Statistically robust event extraction pipelines for spotting structural deviations in temporal network behaviour. Basically a lie detector for packets.","https://github.com/Freya135/Singular-Measure-Decomposition-for-Network-Traffic"],
+["Meta Learning with Generation","2025","MAML-GAN: meta-learning meets GANs for rapid adaptation to new data distributions with very few samples. Compared traditional learning, MAML and MAML-GAN on adaptation speed, sample efficiency and optimisation. Fast learner, unlike my Wi-Fi.","https://github.com/Freya135/Meta-Learning-Meets-Generation"],
+["Uncertainty-Driven Probabilistic Framework for Modeling Worm Propagation","Publication · IEEE I3CTCON 2026","Stochastic worm propagation across a ~72k-node AS topology using uncertainty-adjusted infection. Adaptive models capture congestion and defensive suppression, cutting prediction error ~18% vs. homogeneous models. Peer-reviewed digital plague.","https://ieeexplore.ieee.org/document/11507173"],
+["CySecK Cybersecurity Finishing School, IISc Bengaluru","Aug 2026","Four weeks of IAM, VAPT, GRC, IoT, network and web app security, plus CTFs. Selected among the top 50 students across Karnataka. Hoodie not included."]];
+document.getElementById("proj").innerHTML=R.map(r=>'<div class="card tilt"><span class="tag">'+r[1]+'</span><h3>'+r[0]+'</h3><p>'+r[2]+'</p>'+(r[3]?'<p><a class="btn alt" style="font-size:9px;padding:10px 12px" href="'+r[3]+'" target="_blank" rel="noopener">'+(r[3].includes('ieee')?'Read paper':'View on GitHub')+'</a></p>':'')+'</div>').join("");
+const I=[["Languages",["Python","C++","JavaScript","SQL","Shell Scripting"]],["Systems / Cloud",["Linux","Docker","AWS","Git","GitHub Actions","Cloud Security","IAM"]],["Weapons (ethical)",["Burp Suite","Nessus","Metasploit","Nmap","Wireshark","Kali Linux","Splunk","Maltego","SNMP","DNS"]],["Edge &amp; Embedded",["Raspberry Pi 5","Camera Sensors","Edge Computing","Embedded Linux"]],["Dev Stuff",["React","Node.js","Flask","Next.Auth","PostgreSQL","REST APIs"]],["Coursework Spellbook",["Operating Systems","Computer Networks","ML for Cybersecurity","Web-App Security","Mobile Forensics","Network Security","Ethical Hacking","Security &amp; Privacy in Cloud"]]];
+document.getElementById("inv").innerHTML=I.map(i=>'<div class="card tilt"><h3>'+i[0]+'</h3><div class="inv">'+i[1].map(c=>'<span class="chip">'+c+'</span>').join("")+'</div></div>').join("");
+const T=[["IEEE I3CTCON 2026 research publication"],["1st Place · InnovateX Hackathon, SJB Institute of Technology"],["3rd Place · Nokia University Day 2026"],["Top 1 percentile · NPTEL Software Testing"],["RV University Merit Scholarship"],["Karnataka State Rank 14 · II PUC Boards (97.2%)"]];
+document.getElementById("tro").innerHTML=T.map((x,i)=>'<div class="card tilt trophy"><canvas class="px" data-art="'+["shield","plant","cat","bug","lock","skull"][i]+'" data-s="5"></canvas><p style="margin:0">'+x[0]+'</p></div>').join("");
+drawAll(document);
+
+// 3D tilt
+document.querySelectorAll(".tilt").forEach(c=>{c.addEventListener("pointermove",e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform="rotateY("+x*14+"deg) rotateX("+-y*14+"deg) translateZ(10px)"});c.addEventListener("pointerleave",()=>c.style.transform="")});
+
+// counters
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;io.unobserve(e.target);const el=e.target,n=+el.dataset.n,d=n%1?2:0,pre=el.dataset.pre||"",suf=el.dataset.suf||"";let s=performance.now();
+(function f(now){const p=Math.min((now-s)/1200,1);el.textContent=pre+(n*p).toFixed(d)+suf;if(p<1)requestAnimationFrame(f)})(s)}));
+document.querySelectorAll("[data-n]").forEach(e=>io.observe(e));
+
+// cat
+const bub=document.getElementById("bub");let bt;
+document.getElementById("cat").addEventListener("click",()=>{bub.textContent="meow. "+jokes[Math.floor(Math.random()*jokes.length)];bub.classList.add("on");clearTimeout(bt);bt=setTimeout(()=>bub.classList.remove("on"),4200)});
+
+// background: pixel leaves + cursor trail
+const cv=document.getElementById("fx"),cx=cv.getContext("2d");let W,H,pts=[],trail=[],px=-99,py=-99;
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}rs();addEventListener("resize",rs);
+const cols=["#8fa886","#c5d3b8","#5b7954","#e8c872","#d9776b"];
+for(let i=0;i<46;i++)pts.push({x:Math.random()*W,y:Math.random()*H,s:4+Math.floor(Math.random()*3)*4,v:.2+Math.random()*.6,c:cols[i%5],a:Math.random()*6,dx:0,dy:0});
+addEventListener("pointermove",e=>{px=e.clientX;py=e.clientY;trail.push({x:px,y:py,l:1})});
+(function bg(){cx.clearRect(0,0,W,H);cx.globalAlpha=.45;
+pts.forEach(p=>{p.a+=.01;p.y+=p.v;p.x+=Math.sin(p.a)*.4;const ex=p.x-px,ey=p.y-py,d=Math.hypot(ex,ey);if(d<110){p.dx+=ex/d*2;p.dy+=ey/d*2}p.dx*=.9;p.dy*=.9;p.x+=p.dx;p.y+=p.dy;if(p.y>H+10){p.y=-10;p.x=Math.random()*W}cx.fillStyle=p.c;cx.fillRect(Math.round(p.x/4)*4,Math.round(p.y/4)*4,p.s,p.s)});
+trail=trail.filter(t=>(t.l-=.04)>0);trail.forEach(t=>{cx.globalAlpha=t.l*.7;cx.fillStyle="#d9776b";cx.fillRect(Math.round(t.x/6)*6,Math.round(t.y/6)*6,6,6)});
+cx.globalAlpha=1;requestAnimationFrame(bg)})();
+
+// squashable bugs
+let bc=0;const bcel=document.getElementById("bc");
+function spawn(){const b=document.createElement("canvas");b.className="px bug";b.dataset.art="bug";b.dataset.s="4";draw(b);let x=Math.random()*(innerWidth-50),y=-50,sp=1+Math.random()*1.5,dir=Math.random()<.5?-1:1;b.style.left=x+"px";b.style.top=y+"px";document.body.appendChild(b);let dead=false;
+b.addEventListener("pointerdown",e=>{e.stopPropagation();dead=true;bcel.textContent=++bc;b.style.opacity=0;setTimeout(()=>b.remove(),200)});
+(function mv(){if(dead)return;y+=sp;x+=Math.sin(y/30)*1.5*dir;b.style.transform="translate("+(x-parseFloat(b.style.left))+"px,"+(y+50)+"px)";if(y>innerHeight+60){b.remove();return}requestAnimationFrame(mv)})()}
+setInterval(()=>{if(!document.hidden&&document.querySelectorAll(".bug").length<3)spawn()},5000);
+document.getElementById("orbBug").addEventListener("click",()=>{bcel.textContent=++bc;spawn()});
+
+// konami + theme
+const K=[38,38,40,40,37,39,37,39,66,65];let ki=0;
+addEventListener("keydown",e=>{ki=e.keyCode===K[ki]?ki+1:0;if(ki===K.length){ki=0;document.body.animate([{transform:"rotate(0)"},{transform:"rotate(360deg)"}],{duration:1200});vy=40;bub.textContent="ACCESS GRANTED. Just kidding, it’s a portfolio.";bub.classList.add("on");setTimeout(()=>bub.classList.remove("on"),4000)}});
+document.getElementById("tog").onclick=()=>{const d=document.documentElement,dark=getComputedStyle(d).getPropertyValue("--bg").trim()==="#192218";d.dataset.theme=dark?"light":"dark"};
+</script>
+</body>
+</html>
