@@ -2,7 +2,7 @@
 
 A sage green, pixel-art, slightly unhinged portfolio for a cybersecurity student who finds holes for fun and patches them for money.
 
-**Live site:** https://your-site.vercel.app
+**Live site:** https://sudo-freya.vercel.app
 
 ## What's inside
 
@@ -28,4 +28,27 @@ A sage green, pixel-art, slightly unhinged portfolio for a cybersecurity student
 
 ## Tech
 
-Plain HTML, CSS and vanilla JavaScript in a single `index.html`. No frameworks, no build step, no dependencies beyond Google Fonts (Press Start 2P and
+Plain HTML, CSS and vanilla JavaScript in a single `index.html`. No frameworks, no build step, no dependencies beyond Google Fonts (Press Start 2P and Space Grotesk).
+
+## Run locally
+
+Open `index.html` in a browser. Or serve it:
+
+```bash
+npx serve .
+```
+
+## Deploy
+
+Hosted on Vercel as a static site. Import the repo, keep the Framework Preset as **Other**, and deploy. Every push to `main` redeploys automatically.
+
+## Contact
+
+- Email: freyaraja135@gmail.com
+- LinkedIn: [linkedin.com/in/freyaraja](https://linkedin.com/in/freyaraja)
+- GitHub: [github.com/Freya135](https://github.com/Freya135)
+
+---
+
+*Built with zero frameworks and one concerning amount of sage. Please don't hack it, I'm already doing that for a living.*
+
